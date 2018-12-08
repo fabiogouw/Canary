@@ -47,6 +47,7 @@ public class CanaryFilter extends ZuulFilter {
   @Override
   public Object run() {
     RequestContext ctx = RequestContext.getCurrentContext();
+    _log.info("RouteHost: " + ctx);
     HttpServletRequest request = ctx.getRequest();
     String canaryValue = "";
     Stopwatch stopwatch = Stopwatch.createStarted();

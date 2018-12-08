@@ -1,7 +1,7 @@
 /n1data/
 /n2data/
 /n3data/
-/target/
+target/
 !.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###

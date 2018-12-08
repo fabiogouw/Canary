@@ -11,6 +11,7 @@
     <modules>
         <module>api</module>
         <module>router</module>
+        <module>svcdisc</module>
     </modules>
 
 </project>
