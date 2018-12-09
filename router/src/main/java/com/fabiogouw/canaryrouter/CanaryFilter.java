@@ -1,5 +1,7 @@
 package com.fabiogouw.canaryrouter;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
@@ -41,14 +43,10 @@ public class CanaryFilter extends ZuulFilter {
 
   @Override
   public boolean shouldFilter() {
-    return true;
-  }
-
-  @Override
-  public Object run() {
     RequestContext ctx = RequestContext.getCurrentContext();
     _log.info("RouteHost: " + ctx);
     HttpServletRequest request = ctx.getRequest();
+    
     String canaryValue = "";
     Stopwatch stopwatch = Stopwatch.createStarted();
     try {
@@ -57,18 +55,27 @@ public class CanaryFilter extends ZuulFilter {
       stopwatch.stop();
     }
     updateCallTime(stopwatch.elapsed(TimeUnit.MICROSECONDS));
-    String url = null;
-    if (_canaryList.contains(canaryValue)) {
-      url = UriComponentsBuilder.fromHttpUrl("http://localhost:8090").path("/new").build().toUriString();
-    } else {
-      url = UriComponentsBuilder.fromHttpUrl("http://localhost:8090").path("/legacy").build().toUriString();
+    return !_canaryList.contains(canaryValue);
+  }
+
+  @Override
+  public Object run() {
+    RequestContext ctx = RequestContext.getCurrentContext();
+    String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8070").path("/legacy").build().toUriString();
+    try {
+      //String body = StreamUtils.copyToString(request.getInputStream(), Charset.forName("UTF-8"));
+      String body = "{ \"name\": \"Teste\"}";
+      ctx.setRequest(new YourRequestWrapper(ctx.getRequest(), body));
+      //ctx.set("requestEntity", new ByteArrayInputStream(body.getBytes("UTF-8")));        
+    } catch (Exception e1) {
+      e1.printStackTrace();
     }
     ctx.set("requestURI", "");
     try {
       ctx.setRouteHost(new URL(url));
     } catch (MalformedURLException e) {
       e.printStackTrace();
-    }
+    }  
     return null;
   }
 

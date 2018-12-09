@@ -8,6 +8,9 @@
 		},
 		{
 			"path": "svcdisc"
+		},
+		{
+			"path": "legacy"
 		}
 	]
 }

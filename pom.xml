@@ -10,6 +10,7 @@
 
     <modules>
         <module>api</module>
+        <module>legacy</module>
         <module>router</module>
         <module>svcdisc</module>
     </modules>
